@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html ng-app="Tracker">
+<html ng-app="tracker">
     <head>
         <title>Zoom Tracker</title>
+        <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
         <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" rel="stylesheet">
         <link href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet">
         <script crossorigin="anonymous" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular.min.js"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBRJWtHlVdshEszn4EMv1m1VC7UH_iJz8"></script>
+        <script src="main.js"></script>
     </head>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 90%;
+            height: 300px;
+            margin-bottom: 15px;
+            margin: 0 auto;
+        }
 
-    <body>
+        .glyphicon {
+            margin-top: 0.2em;
+            margin-left: 0.5em;
+        }
+    </style>
+
+    <body ng-controller="parcelController as parcel">
         <div class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -28,35 +49,57 @@
                         <li>
                             <a href="#">
                                 <span class=""></span>
-                                Api Hits</a>
+                                Api Hits
+                                <span class="badge">
+                                    {{ parcel.api_count }}
+                                </span>
+                            </a>
                         </li>
                         <li>
                             <a href="#">
                                 <span class=""></span>
-                                Total Parcels</a>
+                                Total Parcels
+                                <span class="badge">
+                                    {{ parcel.parcels.length }}
+                                </span>
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
                     <div class="input-group">
-                        <input class="form-control" placeholder="Search for..." type="text">
+                        <input class="form-control" placeholder="Search (by parcel name, price, weight, type)" type="text" ng-model="search">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button">Go!</button>
                         </span>
                     </div>
+                    <div class="panel" ng-init="parcel.update_parcels()">
+                        <div ng-repeat="item in parcel.parcels | filter:search" class="list-group">
+                            <div class="list-group-item" ng-class="{'active': item.name == parcel.currentSelected}"
+                                ng-click="parcel.currentSelected = item.name">
+                                <div class="text-left">
+                                    <span class="glyphicon glyphicon-barcode">&nbsp;</span>
+                                    {{ item.name }}
+                                    <span class="glyphicon glyphicon-menu-right pull-right" ng-show="parcel.current_selected == item.name">&nbsp;</span>
+                                    <p class="pull-right">
+                                        {{ item.price | currency:"&#8377;"}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="text-center">
-                            item details
+                        <div class="col-md-3">
+                            <img ng-src={{ parcel.currentSelected.image }}>
                         </div>
-                        <div id="map" class="row" ng-init="initMaps()">
-
+                        <div class="row embed-responsive-item" id="map" ng-controller="mapController" ng-init="init()">
                         </div>
                     </div>
                 </div>
