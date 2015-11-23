@@ -78,14 +78,14 @@
                             <button class="btn btn-default" type="button">Go!</button>
                         </span>
                     </div>
-                    <div class="panel" ng-init="parcel.update_parcels()">
+                    <div class="panel" ng-init="parcel.update_parcels()" style="max-height: 65vh; overflow-y: scroll;">
                         <div ng-repeat="item in parcel.parcels | filter:search" class="list-group">
-                            <div class="list-group-item" ng-class="{'active': item.name == parcel.currentSelected}"
-                                ng-click="parcel.currentSelected = item.name">
+                            <div class="list-group-item" ng-class="{'active': item.name == parcel.currentSelected.name}"
+                                ng-click="parcel.currentSelected = item">
                                 <div class="text-left">
                                     <span class="glyphicon glyphicon-barcode">&nbsp;</span>
                                     {{ item.name }}
-                                    <span class="glyphicon glyphicon-menu-right pull-right" ng-show="parcel.current_selected == item.name">&nbsp;</span>
+                                    <span class="glyphicon glyphicon-menu-right pull-right" ng-show="parcel.currentSelected.name == item.name">&nbsp;</span>
                                     <p class="pull-right">
                                         {{ item.price | currency:"&#8377;"}}
                                     </p>
@@ -95,12 +95,59 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <img ng-src={{ parcel.currentSelected.image }}>
+                    <div class="col-md-3 col-md-offset-1">
+                        <div class="row">
+                            <a href="#" class="thumbnail">
+                                <img ng-src="{{ parcel.currentSelected.image }}" class="img-responsive img-rounded">
+                            </a>
                         </div>
-                        <div class="row embed-responsive-item" id="map" ng-controller="mapController" ng-init="init()">
+                        <div class="row">
+                            <p class="text-left col-md-1">
+                                ETA
+                            </p>
+                            <div class="col-md-2">
+                                <span class="label label-primary">{{ parcel.currentSelected.date | date:'d:MM:yy hh:mm a' }}</span>
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="col-md-6 col-md-offset-1">
+                        <div class="row">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">{{ parcel.currentSelected.name }}</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ parcel.currentSelected.type }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ parcel.currentSelected.price | currency: "&#8377;" }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ parcel.currentSelected.weight }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ parcel.currentSelected.quantity }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ parcel.currentSelected.phone }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {{ parcel.currentSelected.color }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row embed-responsive" id="map" ng-controller="mapController" ng-init="init()">
                     </div>
                 </div>
             </div>
